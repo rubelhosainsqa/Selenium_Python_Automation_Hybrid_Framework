@@ -2,6 +2,11 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
+from POM.AccountSuccessPage import AccountSuccessPage
+from POM.HomePage import HomePage
+from POM.RegisterPage import RegisterPage
+
+
 @pytest.mark.usefixtures("setup_and_teardown")
 
 
@@ -9,60 +14,29 @@ class TestRegister:
 
     # Test Case 1 (Positive Test Case)
     def test_register_module_with_required_data(self):
-        self.driver = webdriver.Chrome()
-        self.driver.maximize_window()
-        self.driver.get("https://tutorialsninja.com/demo/")
-        self.driver.find_element(By.XPATH,"//span[text()='My Account']").click()
-        self.driver.find_element(By.LINK_TEXT, "Register").click()
-        self.driver.find_element(By.NAME, "firstname").send_keys("Rubel")
-        self.driver.find_element(By.NAME, "lastname").send_keys("Hosain")
-        self.driver.find_element(By.NAME, "email").send_keys(self.generate_email_time_stamp())
-        self.driver.find_element(By.NAME, "telephone").send_keys("01785255727")
-        self.driver.find_element(By.NAME, "password").send_keys("Testman#1")
-        self.driver.find_element(By.NAME, "confirm").send_keys("Testman#1")
-        self.driver.find_element(By.XPATH, "//input[@type='checkbox']").click()
-        self.driver.find_element(By.XPATH, "//input[@type='submit']").click()
+        home_page = HomePage(self.driver)
+        register_page = home_page.navigate_to_register_page()
+        account_success_page = register_page.register_an_account("Rubel","Hosain",self.generate_email_time_stamp(),"01785255727","Testman#1","Testman#1","select","no")
         expect_result = "Your Account Has Been Created!"
-        assert self.driver.find_element(By.XPATH, "//div[@id='content']/h1").text.__eq__(expect_result)
+        assert account_success_page.retrieve_successfully_account_creation_message().__eq__(expect_result)
+
 
     # Test Case 2 (Positive Test Case)
     def test_register_module_with_all_data(self):
-        self.driver = webdriver.Chrome()
-        self.driver.maximize_window()
-        self.driver.get("https://tutorialsninja.com/demo/")
-        self.driver.find_element(By.XPATH,"//span[text()='My Account']").click()
-        self.driver.find_element(By.LINK_TEXT, "Register").click()
-        self.driver.find_element(By.NAME, "firstname").send_keys("Rubel")
-        self.driver.find_element(By.NAME, "lastname").send_keys("Hosain")
-        self.driver.find_element(By.NAME, "email").send_keys(self.generate_email_time_stamp())
-        self.driver.find_element(By.NAME, "telephone").send_keys("01785255727")
-        self.driver.find_element(By.NAME, "password").send_keys("Testman#1")
-        self.driver.find_element(By.NAME, "confirm").send_keys("Testman#1")
-        self.driver.find_element(By.XPATH,"//label[@class='radio-inline'][1]").click()
-        self.driver.find_element(By.XPATH, "//input[@type='checkbox']").click()
-        self.driver.find_element(By.XPATH, "//input[@type='submit']").click()
+        home_page = HomePage(self.driver)
+        register_page = home_page.navigate_to_register_page()
+        account_success_page = register_page.register_an_account("Rubel","Hosain",self.generate_email_time_stamp(),"01785255727","Testman#1","Testman#1","select","yes")
         expect_result = "Your Account Has Been Created!"
-        assert self.driver.find_element(By.XPATH, "//div[@id='content']/h1").text.__eq__(expect_result)
+        assert account_success_page.retrieve_successfully_account_creation_message().__eq__(expect_result)
 
 
     # Test Case 3 (Negative Test Case)
     def test_register_module_with_required_data_and_duplicate_email(self):
-        self.driver = webdriver.Chrome()
-        self.driver.maximize_window()
-        self.driver.get("https://tutorialsninja.com/demo/")
-        self.driver.find_element(By.XPATH,"//span[text()='My Account']").click()
-        self.driver.find_element(By.LINK_TEXT, "Register").click()
-        self.driver.find_element(By.NAME, "firstname").send_keys("Rubel")
-        self.driver.find_element(By.NAME, "lastname").send_keys("Hosain")
-        self.driver.find_element(By.NAME, "email").send_keys("rh.riyo.n.bd@gmail.com")
-        self.driver.find_element(By.NAME, "telephone").send_keys("01785255727")
-        self.driver.find_element(By.NAME, "password").send_keys("Testman#1")
-        self.driver.find_element(By.NAME, "confirm").send_keys("Testman#1")
-        self.driver.find_element(By.XPATH,"//label[@class='radio-inline'][1]").click()
-        self.driver.find_element(By.XPATH, "//input[@type='checkbox']").click()
-        self.driver.find_element(By.XPATH, "//input[@type='submit']").click()
+        home_page = HomePage(self.driver)
+        register_page = home_page.navigate_to_register_page()
+        register_page.register_an_account("Rubel","Hosain","rh.riyon.bd@gmail.com","01785255727","Testman#1","Testman#1","select","no")
         expect_result = "Warning: E-Mail Address is already registered!"
-        assert self.driver.find_element(By.XPATH, "//div[@id='account-register']/div[1]").text.__contains__(expect_result)
+        assert register_page.retrieve_waring_message().__eq__(expect_result)
 
 
     # Time stamp is used for create gmail generate
