@@ -1,11 +1,14 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+
+from POM.BasePage import BasePage
 from POM.HomePage import HomePage
 from POM.SearchPage import SearchPage
+from PyTest.BaseTest import BaseTest
 
-@pytest.mark.usefixtures("setup_and_teardown")
-class TestSearchProduct:
+
+class TestSearchProduct(BaseTest):
 
    # Test Case 1 (Positive Test Case)
    def test_search_with_valid_product(self):
